@@ -47,7 +47,7 @@ function splitUrl()
 			
 		// Met trim haal je de zwevende shlashes weg. Bijvoorbeeld:
 		// /Students/Edit/1/ wordt Students/Edit/1
-		$start_url = trim($_SERVER['PHP_SELF'], "?");
+		$start_url = explode("?", $_SERVER['PHP_SELF'])[0];
 		$tmp_url = trim($start_url , "/");
 	
 
