@@ -42,12 +42,11 @@ function route()
 function splitUrl()
 {
 	// Als er iets in de key url zit van $_GET, wordt de code uitgevoerd
-	if (isset($_GET['url'])) {
+	if ($start_url = getRequestedPath()) {
 
 			
 		// Met trim haal je de zwevende shlashes weg. Bijvoorbeeld:
 		// /Students/Edit/1/ wordt Students/Edit/1
-		$start_url = explode("?", $_SERVER['PHP_SELF'])[0];
 		$tmp_url = trim($start_url , "/");
 	
 
@@ -76,4 +75,19 @@ function splitUrl()
 		// Dit wordt teruggegeven aan de functie
 		return $url;	
 	}	
+}
+
+// Simpele fix voor NGINX gebruikers
+function getRequestedPath(){
+	// Controleer of de URL herschreven is
+	if(isset($_GET['url'])){
+		// Zo ja, geef de gehele url terug
+		return $_GET['url'];
+	} elseif ($_SERVER['PHP_SELF']){
+		// Zo niet, geef het gevraagde pad terug
+		return $_SERVER['PHP_SELF'];
+	} else {
+		// Lukt allebei niet? Geef false terug
+		return false;
+	}
 }
