@@ -80,7 +80,7 @@ function splitUrl()
 // Simpele fix voor NGINX gebruikers
 function getRequestedPath(){
 	// Controleer of de URL herschreven is
-	if(isset($_GET['url'])){
+	if(isset($_GET['apache'])){
 		// Zo ja, geef de gehele url terug
 		return $_GET['url'];
 	} elseif ($_SERVER['PHP_SELF']){
