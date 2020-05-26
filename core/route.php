@@ -42,8 +42,7 @@ function route()
 function splitUrl()
 {
     // Als er iets in de key url zit van $_GET, wordt de code uitgevoerd
-    if ($start_url = getRequestedPath()) {
-
+    $start_url = getRequestedPath();
 
         // Met trim haal je de zwevende shlashes weg. Bijvoorbeeld:
         // /Students/Edit/1/ wordt Students/Edit/1
@@ -62,7 +61,7 @@ function splitUrl()
 
         // Hier worden op basis van de eerder opgegeven variable $tmp_url de keys controller en action gevuld
 
-        $url['controller'] = isset($tmp_url[0]) ? ucwords($tmp_url[0] . 'Controller') : null;
+        $url['controller'] = !empty($tmp_url[0]) ? ucwords($tmp_url[0] . 'Controller') : null;
         $url['action'] = isset($tmp_url[1]) ? $tmp_url[1] : 'index';
 
         // Die twee waarden worden uit de array gehaald
@@ -74,7 +73,7 @@ function splitUrl()
 
         // Dit wordt teruggegeven aan de functie
         return $url;
-    }
+    
 }
 
 // Simpele fix voor NGINX gebruikers
