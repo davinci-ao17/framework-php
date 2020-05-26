@@ -4,15 +4,8 @@ function route()
 {
 	// Hier wordt de functie aangeroepen die de URL op splitst op het standaard seperatie teken (in PHP is dit een /)
 	$url = splitUrl();
-	// Er wordt een variable opgemaakt uit de URL, de eerste variabele wordt geplaatst in de key controller, de tweede wordt in de key action geplaatst. De overige worden in params geplaatst (als array)
-	// Als die niet bestaat, gaat hij de standaard controller inladen, welke in config.php is aangemaakt. 
-	// Hierna roept hij standaard de index functie aan.
-	if (!$url['controller']) {
-		require(ROOT . 'controller/' . DEFAULT_CONTROLLER . 'Controller.php');
-		call_user_func('index');
-	// Als dat niet het geval is, dus als er wel een controller is, kijkt hij of het bestand bestaat. 
-	//	Vervolgens laad hij dat bestand in
-	} elseif (file_exists(ROOT . 'controller/' . $url['controller'] . '.php')) {
+	//Hier wordt gecontroleerd of er een bestand bestaat met opgebouwde variables uit de splitUrl functie
+	if (file_exists(ROOT . 'controller/' . $url['controller'] . '.php')) {
 		require(ROOT . 'controller/' . $url['controller'] . '.php');
 		// Vervolgens wordt er gekeken of er een functie met de naam bestaat die in de key action zit. 
 		// Bijvoorbeeld: http://localhost/Students/Edit/1, dan is de action Edit. 
@@ -32,7 +25,7 @@ function route()
 			call_user_func('error_404');
 		}
 	} else {
-		// Wanneer de controller niet bestaat, wordt de errorpagina getoond
+		// Wanneer het bestand niet bestaat weten we dat de gebruiker een verkeerde URL heeft ingevuld, enn geven we een foutmelding
 		require(ROOT . 'controller/ErrorController.php');
 		call_user_func('error_404');
 	}
@@ -43,8 +36,6 @@ function splitUrl()
 {
 	// Als er iets in de key url zit van $_GET, wordt de code uitgevoerd
 	if ($start_url = getRequestedPath()) {
-
-			
 		// Met trim haal je de zwevende shlashes weg. Bijvoorbeeld:
 		// /Students/Edit/1/ wordt Students/Edit/1
 		$tmp_url = trim($start_url , "/");
@@ -61,7 +52,7 @@ function splitUrl()
 		$tmp_url = explode("/", $tmp_url);
 
 		// Hier worden op basis van de eerder opgegeven variable $tmp_url de keys controller en action gevuld
-
+        // Er wordt een variable opgemaakt uit de URL, de eerste variabele wordt geplaatst in de key controller, de tweede wordt in de key action geplaatst.
 		$url['controller'] = isset($tmp_url[0]) ? ucwords($tmp_url[0] . 'Controller') : null;
 		$url['action'] = isset($tmp_url[1]) ? $tmp_url[1] : 'index';
 
@@ -69,7 +60,6 @@ function splitUrl()
 		unset($tmp_url[0], $tmp_url[1]);
 
 		// De overige variabelen worden in de key params gestopt
-
 		$url['params'] = array_values($tmp_url);
 
 		// Dit wordt teruggegeven aan de functie
@@ -80,14 +70,11 @@ function splitUrl()
 // Simpele fix voor NGINX gebruikers
 function getRequestedPath(){
 	// Controleer of de URL herschreven is
-	if(isset($_GET['url'])){
-		// Zo ja, geef de gehele url terug
-		return $_GET['url'];
-	} elseif ($_SERVER['PHP_SELF']){
-		// Zo niet, geef het gevraagde pad terug
-		return $_SERVER['PHP_SELF'];
-	} else {
-		// Lukt allebei niet? Geef false terug
-		return false;
-	}
+	if(isset($_GET['url'])) {
+        // Zo ja, geef de gehele url terug
+        return $_GET['url'];
+    } else {
+	    // zo nee, geef de standaard url terug.
+        return DEFAULT_CONTROLLER . '/index';
+    }
 }
