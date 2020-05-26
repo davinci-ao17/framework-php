@@ -93,7 +93,12 @@ function getRequestedPath(){
 
     } elseif ($_SERVER['PHP_SELF']){
         // Zo niet, geef het gevraagde pad terug
-        return $_SERVER['PHP_SELF'];
+        if($_SERVER["PHP_SELF"] == "/"){
+            return '';
+        } else {
+            return $_SERVER['PHP_SELF'];
+        }
+        
     } else {
         // Lukt allebei niet? Geef false terug
         return false;
